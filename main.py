@@ -1,7 +1,10 @@
-from logic.controller import CSVController
+import logging
+
+from controller import CSVController
 
 
 def main():
+    logging.basicConfig(level=logging.ERROR)
     controller = CSVController()
     controller.run()
 

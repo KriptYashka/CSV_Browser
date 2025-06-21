@@ -1,19 +1,21 @@
 import argparse
 
 
+
 class Arguments:
     def __init__(self):
         self.args = {
             ("--file", "-f"): {"type": str, "help": "Путь к файлу", "required": True},
             ("--where", "-w"): {"type": str, "help": "Поиск по столбцам"},
             ("--aggregate", "-a"): {"type": str, "help": "Применяемая функция агрегации"},
+            ("--order-by", "-o"): {"type": str, "help": "Сортировка по столбцу (может быть реализована)"},
         }
 
     def items(self):
         return self.args.items()
 
 
-class CSVCommandParser:
+class CsvCommandParser:
     def __init__(self):
         self.parser = argparse.ArgumentParser(description="CSV обработчик")
         self.args = Arguments()
@@ -25,5 +27,5 @@ class CSVCommandParser:
 
 
 if __name__ == '__main__':
-    parser = CSVCommandParser()
+    parser = CsvCommandParser()
     parser.read()
