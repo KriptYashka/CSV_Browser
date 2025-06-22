@@ -23,16 +23,11 @@ class CSVController:
         def decorator(func):
             @wraps(func)
             def wrapper(instance, *args, **kwargs):
-                if arg_name in instance.cmd_args:
+                if arg_name in instance.cmd_args and instance.cmd_args.__getattr__(arg_name) is not None:
                     return func(instance, *args, **kwargs)
                 return None
             return wrapper
         return decorator
-
-    def get_aggregate_function(self):
-        functions = {
-            "avg": None,
-        }
 
     @require_args("where")
     def execute_filter(self, data):

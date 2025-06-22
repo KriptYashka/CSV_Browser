@@ -49,8 +49,8 @@ class FilterHandler:
         ">=": MoreEqualFilter,
         "<": LessFilter,
         ">": MoreFilter,
+        "!=": NotEqualFilter,
         "=": EqualFilter,
-        "!=": NotEqualFilter
     }
 
     def execute(self, data: list[list], arg_str: str):
