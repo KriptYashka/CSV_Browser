@@ -1,4 +1,6 @@
 import csv
+import logging
+import os.path
 from typing import List, Optional, Any
 
 import tabulate
@@ -30,8 +32,13 @@ class CsvIO:
             new_row = list(map(self.clean_object, self.data[row_i]))
             self.cleaned_data.append(new_row)
 
-    def read_and_clean(self, path: str) -> list[Any]:
+    def read_and_clean(self, path: str) -> Optional[list[list[Any]]]:
+        if not os.path.exists(path):
+            logging.error(f"Файла по указанному пути {path} не существует")
+            return None
+
         self.clear()
+        logging.info(f"Записаны новые данные")
         with open(path) as file:
             reader = csv.reader(file)
             for row in reader:

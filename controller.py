@@ -23,7 +23,8 @@ class CSVController:
         def decorator(func):
             @wraps(func)
             def wrapper(instance, *args, **kwargs):
-                if arg_name in instance.cmd_args and instance.cmd_args.__getattr__(arg_name) is not None:
+                items = vars(instance.cmd_args)
+                if arg_name in items and items[arg_name] is not None:
                     return func(instance, *args, **kwargs)
                 return None
             return wrapper
@@ -31,22 +32,27 @@ class CSVController:
 
     @require_args("where")
     def execute_filter(self, data):
-        data, error = FilterHandler().execute(data, self.cmd_args.where)
+        new_data, error = FilterHandler().execute(data, self.cmd_args.where)
         if error:
             logging.error("Операция фильтра не была применена: " + str(error))
-        return data
+        return new_data
 
     @require_args("aggregate")
     def execute_aggregation(self, data):
-        data, error = AggregationHandler().execute(data, self.cmd_args.aggregate)
+        new_data, error = AggregationHandler().execute(data, self.cmd_args.aggregate)
         if error:
             logging.error("Операция агрегации не была применена: " + str(error))
-        return data
+        return new_data
 
     def run(self):
         self.cmd_args = self.parser.read()
-        cleaned_data = self.handler.read_and_clean(self.cmd_args.file)
+        data = self.handler.read_and_clean(self.cmd_args.file)
+        if not data:
+            return
 
-        filtered_data = self.execute_filter(cleaned_data)
-        result = self.execute_aggregation(filtered_data)
-        self.handler.print(result)
+        if filtered_data := self.execute_filter(data):
+            data = filtered_data
+        if aggregated_data := self.execute_aggregation(data):
+            data = aggregated_data
+
+        self.handler.print(data)
